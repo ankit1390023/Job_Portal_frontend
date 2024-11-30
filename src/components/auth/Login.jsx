@@ -12,6 +12,7 @@ import { GrLinkedin } from "react-icons/gr"; // LinkedIn icon
 import { FaGithub } from "react-icons/fa6"; // GitHub icon
 import axios from "axios";
 import Loader from "../ui/Loader";
+import { USER_API_END_POINT } from "@/utils/constant";
 
 const formSchema = z.object({
     identifier: z
@@ -40,7 +41,7 @@ const Login = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post("http://localhost:5000/api/v1/user/login", data);
+            const response = await axios.post(`${USER_API_END_POINT}/user/login`, data);
             if (response.data.success) {
                 toast.success(response.data.message || "Login successful");
                 navigate("/");

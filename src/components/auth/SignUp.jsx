@@ -63,7 +63,7 @@ const SignUp = () => {
             }
 
             // Send the request to the backend API using Axios
-            const response = await axios.post("http://localhost:5000/api/v1/user/register", formData, {
+            const response = await axios.post(`${USER_API_END_POINT}/user/register`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",   // Only necessary if sending file
                 }
