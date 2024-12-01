@@ -13,6 +13,7 @@ import Contact from './components/Contact'
 import Browse from './components/Browse'
 import { Provider } from 'react-redux'
 import store from './redux/store';
+import { Auth0Provider } from '@auth0/auth0-react';
 // const appRouter = createBrowserRouter([
 //   {
 //     path: '/',
@@ -46,9 +47,11 @@ const appRouter = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <Auth0Provider domain='dev-uixsca74motk1jhb.us.auth0.com' clientId='SUWeEplrDAkHY7QzhkD8SiwM7hxgtbrj' authorizationParams={{redirect_uri:window.location.origin}}>
     <Provider store={store}>
       <RouterProvider router={appRouter} />
       <Toaster />
-    </Provider>
+      </Provider>
+    </Auth0Provider>
   </React.StrictMode>,
 )

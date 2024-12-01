@@ -13,6 +13,7 @@ import { FaGithub } from "react-icons/fa6"; // GitHub icon
 import axios from "axios";
 import Loader from "../ui/Loader";
 import { USER_API_END_POINT } from "@/utils/constant";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const formSchema = z.object({
     identifier: z
@@ -29,6 +30,14 @@ const formSchema = z.object({
 });
 
 const Login = () => {
+    const { loginWithRedirect, user, isAuthenticated } = useAuth0();
+    const handleGoogleLogin = async () => {
+        try {
+            await loginWithRedirect({ connection: 'google-oauth2' });
+        } catch (error) {
+            console.log('error during login ', error);
+        }
+    }
     const {
         register,
         handleSubmit,
@@ -126,6 +135,7 @@ const Login = () => {
                         <Button
                             type="button"
                             className="w-full flex items-center justify-center py-3 border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition duration-300"
+                            onClick = {handleGoogleLogin}
                         >
                             <FcGoogle className="mr-2 text-xl" /> Login with Google
                         </Button>
