@@ -9,11 +9,15 @@ import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } 
 import Home from './components/Home'
 import About from './components/About'
 import Contact from './components/Contact'
- import Jobs from './components/Jobs'
+import Jobs from './components/Jobs'
 import Browse from './components/Browse'
 import { Provider } from 'react-redux'
 import store from './redux/store';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { Auth0Provider } from '@auth0/auth0-react'
+import Profile from './components/Profile/Profile'
+import JobDescription from './components/JobDescription'
+
+
 // const appRouter = createBrowserRouter([
 //   {
 //     path: '/',
@@ -33,24 +37,31 @@ import { Auth0Provider } from '@auth0/auth0-react';
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route index element={<Home />} />
+      <Route path="home" element={<Home />} />
       <Route path="about" element={<About />} />
       <Route path="login" element={<Login />} />
       <Route path="signUp" element={<SignUp />} />
       <Route path="contact" element={<Contact />} />
       <Route path="jobs" element={<Jobs />} />
-      <Route path="/browse" element={<Browse/>} />
-
+      <Route path="browse" element={<Browse />} />
+      <Route path="profile" element={<Profile />} />
+      <Route path="jobDescription/:id" element={<JobDescription />} />
     </Route>
   )
 );
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Auth0Provider domain='dev-uixsca74motk1jhb.us.auth0.com' clientId='SUWeEplrDAkHY7QzhkD8SiwM7hxgtbrj' authorizationParams={{redirect_uri:window.location.origin}}>
-    <Provider store={store}>
-      <RouterProvider router={appRouter} />
-      <Toaster />
+    <Auth0Provider
+      domain="dev-uixsca74motk1jhb.us.auth0.com"
+      clientId="BAG11DUPsmYX8AtHoT4Ld93jbkF3CZ0v"
+      authorizationParams={{
+        redirect_uri: window.location.origin
+      }}
+    >
+      <Provider store={store}>
+        <RouterProvider router={appRouter} />
+        <Toaster />
       </Provider>
     </Auth0Provider>
   </React.StrictMode>,

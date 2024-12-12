@@ -14,10 +14,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Bell } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Header = () => {
+    const { logout } = useAuth0();
+    let user = true;
     return (
-        <div className="flex justify-between items-center px-6 py-4 bg-white shadow-md ">
+        <div className="flex justify-between items-center px-10 py-4 bg-white ">
             {/* Logo */}
             <div className="text-3xl font-bold text-blue-600">
                 <span className="text-yellow-500">Workify</span>
@@ -39,7 +42,7 @@ const Header = () => {
             </div>
 
             {/* Dropdown for Job Categories */}
-            <DropdownMenu>
+            {/*<DropdownMenu>
                 <DropdownMenuTrigger>
                     <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
                         Jobs
@@ -50,11 +53,11 @@ const Header = () => {
                         <DropdownMenuItem key={category} className="text-gray-700 hover:bg-blue-100">{category}</DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu>*/}
 
             {/* Navigation Links */}
             <nav className="hidden md:flex space-x-6 text-lg">
-                {["About", "Contact", "Jobs", "Browse"].map((link) => (
+                {["Home", "About", "Contact", "Jobs", "Browse"].map((link) => (
                     <NavLink
                         key={link}
                         to={`/${link.toLowerCase()}`}
@@ -81,67 +84,77 @@ const Header = () => {
                         </span>
                     </Button>
                 </div>
+                {
+                    !user ?
+                        (<Link to="/login">
+                        <Button
+                            variant="default"
+                            className="rounded bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                            Login
+                        </Button>
+                       </Link>
+                    )
+                        : (
+                            <Popover>
+                            <PopoverTrigger asChild>
+                                <Avatar className="cursor-pointer">
+                                    <AvatarImage src="https://github.com/shadcn.png" alt="User Avatar" />
+                                    <AvatarFallback>AS</AvatarFallback>
+                                </Avatar>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-64 p-4 bg-white rounded-md shadow-lg">
+                                <div className="flex flex-col items-center">
+                                    {/* User Avatar */}
+                                    <Avatar className="w-16 h-16">
+                                        <AvatarImage src="https://github.com/shadcn.png" alt="Profile Avatar" />
+                                        <AvatarFallback>AS</AvatarFallback>
+                                    </Avatar>
+                                    <h4 className="mt-2 text-lg font-semibold text-gray-700">Ankit Srivastav</h4>
+                                    <p className="text-sm text-gray-600">ankit.jobportal@example.com</p>
 
-                {/* Login Button */}
-                <Link to="/login">
-                    <Button
-                        variant="default"
-                        className="rounded bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                        Login
-                    </Button>
-                </Link>
+                                    {/* Profile Details */}
+                                    <div className="w-full mt-4 space-y-2 text-sm text-gray-800">
+                                        <div className="flex justify-between">
+                                            <span className="font-medium">Role:</span>
+                                            <span>Job Seeker</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-medium">Joined:</span>
+                                            <span>March 2023</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-medium">Applications:</span>
+                                            <span>12</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-medium">Saved Jobs:</span>
+                                            <span>5</span>
+                                        </div>
+                                    </div>
 
-                {/* User Avatar and Popover */}
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Avatar className="cursor-pointer">
-                            <AvatarImage src="https://github.com/shadcn.png" alt="User Avatar" />
-                            <AvatarFallback>AS</AvatarFallback>
-                        </Avatar>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 p-4 bg-white rounded-md shadow-lg">
-                        <div className="flex flex-col items-center">
-                            {/* User Avatar */}
-                            <Avatar className="w-16 h-16">
-                                <AvatarImage src="https://github.com/shadcn.png" alt="Profile Avatar" />
-                                <AvatarFallback>AS</AvatarFallback>
-                            </Avatar>
-                            <h4 className="mt-2 text-lg font-semibold text-gray-700">Ankit Srivastav</h4>
-                            <p className="text-sm text-gray-600">ankit.jobportal@example.com</p>
+                                    {/* Buttons */}
+                                    <div className="mt-4 w-full flex flex-col gap-2">
+                                        <Button variant="outline" className="w-full text-blue-600 border-blue-600 hover:bg-blue-50">
+                                            Profile Settings
+                                        </Button>
+                                        <Button variant="outline" className="w-full text-red-600 border-red-600 hover">
+                                            <Link to="/profile">
+                                                See Profile
+                                            </Link>
 
-                            {/* Profile Details */}
-                            <div className="w-full mt-4 space-y-2 text-sm text-gray-800">
-                                <div className="flex justify-between">
-                                    <span className="font-medium">Role:</span>
-                                    <span>Job Seeker</span>
+                                        </Button>
+                                        <Button
+                                            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                                            variant="default" className="w-full bg-red-500 text-white hover:bg-red-600">
+                                            Logout
+                                        </Button>
+                                    </div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium">Joined:</span>
-                                    <span>March 2023</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium">Applications:</span>
-                                    <span>12</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-medium">Saved Jobs:</span>
-                                    <span>5</span>
-                                </div>
-                            </div>
-
-                            {/* Buttons */}
-                            <div className="mt-4 w-full flex flex-col gap-2">
-                                <Button variant="outline" className="w-full text-blue-600 border-blue-600 hover:bg-blue-50">
-                                    Profile Settings
-                                </Button>
-                                <Button variant="default" className="w-full bg-red-500 text-white hover:bg-red-600">
-                                    Logout
-                                </Button>
-                            </div>
-                        </div>
-                    </PopoverContent>
-                </Popover>
+                            </PopoverContent>
+                        </Popover>)
+                }
+               
             </div>
         </div>
     );
