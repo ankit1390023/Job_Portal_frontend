@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
 	darkMode: "class", // Enables dark mode using the 'class' strategy
 	content: [
 		"./index.html",
@@ -7,13 +7,11 @@ module.exports = {
 	],
 	theme: {
 		extend: {
-			// Border radius extensions
 			borderRadius: {
-				lg: 'var(--radius)', // Large radius
-				md: 'calc(var(--radius) - 2px)', // Medium radius
-				sm: 'calc(var(--radius) - 4px)', // Small radius
+				lg: 'var(--radius)',
+				md: 'calc(var(--radius) - 2px)',
+				sm: 'calc(var(--radius) - 4px)',
 			},
-			// Custom color palette
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
@@ -47,17 +45,14 @@ module.exports = {
 					3: 'hsl(var(--chart-3))',
 				},
 			},
-			// Custom spacing values
 			spacing: {
 				18: '4.5rem',
 				22: '5.5rem',
 			},
-			// Font family settings
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 				mono: ['Fira Code', 'monospace'],
 			},
-			// Custom animations and keyframes
 			animation: {
 				fadeIn: 'fadeIn 0.5s ease-in-out',
 				slideIn: 'slideIn 0.5s ease-in-out',
