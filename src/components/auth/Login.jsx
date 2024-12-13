@@ -14,6 +14,8 @@ import axios from "axios";
 import Loader from "../ui/Loader";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/authSlice";
 
 
 const formSchema = z.object({
@@ -41,11 +43,12 @@ const Login = () => {
 
     const navigate = useNavigate();
     const { loginWithRedirect } = useAuth0();
+    const dispatch = useDispatch();
     const onSubmit = async (data) => {
         try {
             const response = await axios.post(`${USER_API_END_POINT}/user/login`, data);
             if (response.data.success) {
-                
+                dispatch(setUser(response.data.data.user));
                 toast.success(response.data.message || "Login successful");
                 navigate("/");
             } else {

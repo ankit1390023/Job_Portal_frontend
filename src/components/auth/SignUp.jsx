@@ -61,7 +61,7 @@ const SignUp = () => {
             if (data.avatar && data.avatar[0]) {
                 formData.append("avatar", data.avatar[0]);
             }
-
+            console.log("formData",formData)
             // Send the request to the backend API using Axios
             const response = await axios.post(`${USER_API_END_POINT}/user/register`, formData, {
                 headers: {

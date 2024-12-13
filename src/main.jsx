@@ -52,6 +52,8 @@ const appRouter = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <Provider store={store}>
+
     <Auth0Provider
       domain="dev-uixsca74motk1jhb.us.auth0.com"
       clientId="BAG11DUPsmYX8AtHoT4Ld93jbkF3CZ0v"
@@ -59,10 +61,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         redirect_uri: window.location.origin
       }}
     >
-      <Provider store={store}>
         <RouterProvider router={appRouter} />
         <Toaster />
-      </Provider>
-    </Auth0Provider>
+     
+      </Auth0Provider>
+    </Provider>
   </React.StrictMode>,
 )

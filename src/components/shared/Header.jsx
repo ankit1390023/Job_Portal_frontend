@@ -15,10 +15,11 @@ import { Input } from "@/components/ui/input";
 import { Bell } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useSelector } from "react-redux";
 
 const Header = () => {
     const { logout } = useAuth0();
-    let user = true;
+    const { user } = useSelector((state) => state.auth);
     return (
         <div className="flex justify-between items-center px-10 py-4 bg-white ">
             {/* Logo */}
@@ -87,74 +88,72 @@ const Header = () => {
                 {
                     !user ?
                         (<Link to="/login">
-                        <Button
-                            variant="default"
-                            className="rounded bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                            Login
-                        </Button>
-                       </Link>
-                    )
+                            <Button
+                                variant="default"
+                                className="rounded bg-blue-600 hover:bg-blue-700 text-white"
+                            >
+                                Login
+                            </Button>
+                        </Link>
+                        )
                         : (
                             <Popover>
-                            <PopoverTrigger asChild>
-                                <Avatar className="cursor-pointer">
-                                    <AvatarImage src="https://github.com/shadcn.png" alt="User Avatar" />
-                                    <AvatarFallback>AS</AvatarFallback>
-                                </Avatar>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-64 p-4 bg-white rounded-md shadow-lg">
-                                <div className="flex flex-col items-center">
-                                    {/* User Avatar */}
-                                    <Avatar className="w-16 h-16">
-                                        <AvatarImage src="https://github.com/shadcn.png" alt="Profile Avatar" />
+                                <PopoverTrigger asChild>
+                                    <Avatar className="cursor-pointer">
+                                        <AvatarImage src={user.profile.avatar} alt="User Avatar" />
                                         <AvatarFallback>AS</AvatarFallback>
                                     </Avatar>
-                                    <h4 className="mt-2 text-lg font-semibold text-gray-700">Ankit Srivastav</h4>
-                                    <p className="text-sm text-gray-600">ankit.jobportal@example.com</p>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-64 p-4 bg-white rounded-md shadow-lg">
+                                    <div className="flex flex-col items-center">
+                                        {/* User Avatar */}
+                                        <Avatar className="w-16 h-16">
+                                            <AvatarImage src={user.profile.avatar} alt="Profile Avatar" />
+                                            <AvatarFallback>AS</AvatarFallback>
+                                        </Avatar>
+                                        <h4 className="mt-2 text-lg font-semibold text-gray-700">{user?.fullName}</h4>
+                                        <p className="text-sm text-gray-600">{user?.email}</p>
 
-                                    {/* Profile Details */}
-                                    <div className="w-full mt-4 space-y-2 text-sm text-gray-800">
-                                        <div className="flex justify-between">
-                                            <span className="font-medium">Role:</span>
-                                            <span>Job Seeker</span>
+                                        {/* Profile Details */}
+                                        <div className="w-full mt-4 space-y-2 text-sm text-gray-800">
+                                            <div className="flex justify-between">
+                                                <span className="font-medium">Role:</span>
+                                                <span>{user.role}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span className="font-medium">Joined:</span>
+                                                <span>March 2023</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span className="font-medium">Applications:</span>
+                                                <span>12</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span className="font-medium">Saved Jobs:</span>
+                                                <span>5</span>
+                                            </div>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="font-medium">Joined:</span>
-                                            <span>March 2023</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="font-medium">Applications:</span>
-                                            <span>12</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="font-medium">Saved Jobs:</span>
-                                            <span>5</span>
+
+                                        {/* Buttons */}
+                                        <div className="mt-4 w-full flex flex-col gap-2">
+                                           
+                                            <Button variant="outline" className="w-full text-red-600 border-red-600 hover">
+                                                <Link to="/profile">
+                                                    See Profile
+                                                </Link>
+
+                                            </Button>
+                                            <Button
+                                                onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                                                variant="default" className="w-full bg-red-500 text-white hover:bg-red-600">
+                                                Logout
+                                            </Button>
                                         </div>
                                     </div>
-
-                                    {/* Buttons */}
-                                    <div className="mt-4 w-full flex flex-col gap-2">
-                                        <Button variant="outline" className="w-full text-blue-600 border-blue-600 hover:bg-blue-50">
-                                            Profile Settings
-                                        </Button>
-                                        <Button variant="outline" className="w-full text-red-600 border-red-600 hover">
-                                            <Link to="/profile">
-                                                See Profile
-                                            </Link>
-
-                                        </Button>
-                                        <Button
-                                            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-                                            variant="default" className="w-full bg-red-500 text-white hover:bg-red-600">
-                                            Logout
-                                        </Button>
-                                    </div>
-                                </div>
-                            </PopoverContent>
-                        </Popover>)
+                                </PopoverContent>
+                            </Popover>)
                 }
-               
+
             </div>
         </div>
     );
