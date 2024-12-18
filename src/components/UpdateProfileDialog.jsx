@@ -8,7 +8,6 @@ import {
     DialogTitle,
     DialogTrigger,
 } from './ui/dialog';
-import { Pen } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
@@ -17,150 +16,174 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { USER_API_END_POINT } from '@/utils/constant';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/redux/authSlice';
 
 const UpdateProfileDialog = ({ onSave }) => {
     const [loading, setLoading] = useState(false);
-    const { user } = useSelector(state => state.auth);
-    const [profileData, setProfileData] = useState({
+    const { user } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
+    const [input, setInput] = useState({
         fullName: user?.fullName || '',
         email: user?.email || '',
         phoneNumber: user?.phoneNumber || '',
         bio: user?.profile?.bio || '',
-        skills: user?.skills || '',
+        skills: user?.skills || [],
         resume: null,
     });
 
-    const handleChange = (e) => {
+    const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setProfileData({ ...profileData, [name]: value });
+        setInput((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSkillsChange = (e) => {
+        const skillsString = e.target.value;
+        const skillsArray = skillsString
+            .split(',')
+            .map((skill) => skill.trim())
+            .filter((skill) => skill !== '');
+        setInput((prev) => ({ ...prev, skills: skillsArray }));
     };
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setProfileData({ ...profileData, resume: file });
+        const file = e.target.files?.[0];
+        setInput((prev) => ({ ...prev, resume: file }));
     };
 
-    const onSubmitHandler = async (e) => {
+    const handleFormSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('fullName', profileData.fullName);
-        formData.append('email', profileData.email);
-        formData.append('phoneNumber', profileData.phoneNumber);
-        formData.append('bio', profileData.bio);
-        formData.append('skills', profileData.skills);
-        if (profileData.resume) {
-            formData.append('resume', profileData.resume);
-        }
+        setLoading(true);
 
-        // Log each field to ensure values are present
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
+        const formData = new FormData();
+        formData.append('fullName', input.fullName);
+        formData.append('email', input.email);
+        formData.append('phoneNumber', input.phoneNumber);
+        formData.append('bio', input.bio);
+        formData.append('skills', input.skills.join(',')); // Convert array to comma-separated string
+        if (input.resume) {
+            formData.append('resume', input.resume);
         }
 
         try {
-            const response = await axios.patch(`http://localhost:5173/api/v1/user/update-account`, formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-             
-            });
+            const response = await axios.patch(
+                `${USER_API_END_POINT}/user/update-account`,
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    withCredentials: true,
+                }
+            );
+
             if (response.data.success) {
-                toast.success("Profile updated successfully!");
+                dispatch(setUser(response.data.user));
+                toast.success('Profile updated successfully!');
                 onSave && onSave(response.data.user);
             } else {
-                toast.error(response.data.message || "Failed to update profile.");
+                toast.error(response.data.message || 'Failed to update profile.');
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || error.message || "Something went wrong.";
+            const errorMessage =
+                error.response?.data?.message ||
+                error.message ||
+                'Something went wrong while updating the profile.';
             toast.error(errorMessage);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <Dialog>
-            <DialogTrigger asChild className='border-none'>
-                <span className="">Edit Profile</span>
+            <DialogTrigger asChild>
+                <span className="cursor-pointer">Edit Profile</span>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-lg bg-white dark:bg-gray-900 text-black dark:text-white max-h-[75vh] overflow-y-auto scrollbar-hidden">
+
+            <DialogContent className="sm:max-w-lg bg-white dark:bg-gray-900 text-black dark:text-white max-h-[75vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className='text-2xl'>Update Your Profile</DialogTitle>
+                    <DialogTitle className="text-2xl">Update Your Profile</DialogTitle>
                     <DialogDescription>
-                        Make changes to your profile information below. Click save when you're done.
+                        Update your profile information below. Click "Save" when you're done.
                     </DialogDescription>
                 </DialogHeader>
-                <form className="space-y-4" onSubmit={onSubmitHandler}>
-                    <div className="space-y-1">
-                        <Label htmlFor="fullName" className="text-sm font-medium">Name</Label>
+
+                <form className="space-y-4" onSubmit={handleFormSubmit}>
+                    <div>
+                        <Label htmlFor="fullName">Name</Label>
                         <Input
                             id="fullName"
                             name="fullName"
-                            value={profileData.fullName}
-                            onChange={handleChange}
-                            type="text"
+                            value={input.fullName}
+                            onChange={handleInputChange}
                             placeholder="Enter your name"
-                            className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
                         />
                     </div>
-                    <div className="space-y-1">
-                        <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+
+                    <div>
+                        <Label htmlFor="email">Email</Label>
                         <Input
                             id="email"
                             name="email"
-                            value={profileData.email}
-                            onChange={handleChange}
-                            type="email"
+                            value={input.email}
+                            onChange={handleInputChange}
                             placeholder="Enter your email"
-                            className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
+                            type="email"
                         />
                     </div>
-                    <div className="space-y-1">
-                        <Label htmlFor="skills" className="text-sm font-medium">Skills</Label>
-                        <Input
-                            id="skills"
-                            name="skills"
-                            value={profileData.skills}
-                            onChange={handleChange}
-                            placeholder="Enter your skills (comma-separated)"
-                            className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
-                        />
-                    </div>
-                    <div className="space-y-1">
-                        <Label htmlFor="phoneNumber" className="text-sm font-medium">Phone Number</Label>
+
+                    <div>
+                        <Label htmlFor="phoneNumber">Phone Number</Label>
                         <Input
                             id="phoneNumber"
                             name="phoneNumber"
-                            value={profileData.phoneNumber}
-                            onChange={handleChange}
+                            value={input.phoneNumber}
+                            onChange={handleInputChange}
                             placeholder="Enter your phone number"
-                            className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
                         />
                     </div>
-                    <div className="space-y-1">
-                        <Label htmlFor="resume" className="text-sm font-medium">Resume</Label>
+
+                    <div>
+                        <Label htmlFor="skills">Skills</Label>
+                        <Input
+                            id="skills"
+                            name="skills"
+                            value={input.skills.join(', ')} // Convert array to comma-separated string
+                            onChange={handleSkillsChange}
+                            placeholder="Enter your skills (comma-separated)"
+                        />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="resume">Resume</Label>
                         <Input
                             id="resume"
                             name="resume"
                             type="file"
-                            accept=".pdf"
+                            accept="application/pdf"
                             onChange={handleFileChange}
-                            className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
                         />
                     </div>
-                    <div className="space-y-1">
-                        <Label htmlFor="bio" className="text-sm font-medium">Bio</Label>
+
+                    <div>
+                        <Label htmlFor="bio">Bio</Label>
                         <Textarea
                             id="bio"
                             name="bio"
-                            value={profileData.bio}
-                            onChange={handleChange}
+                            value={input.bio}
+                            onChange={handleInputChange}
                             placeholder="Tell us about yourself"
-                            className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
                         />
                     </div>
+
                     <DialogFooter>
-                        <div className="mt-6 flex justify-end space-x-2 px-1 pb-4">
-                            <Button type="submit" className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 disabled:opacity-50">
-                                {loading ? 'Saving...' : 'Save Changes'}
-                            </Button>
-                        </div>
+                        <Button
+                            type="submit"
+                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                            disabled={loading}
+                        >
+                            {loading ? 'Saving...' : 'Save Changes'}
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

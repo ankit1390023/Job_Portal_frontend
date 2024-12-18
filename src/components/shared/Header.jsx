@@ -137,12 +137,14 @@ const Header = () => {
                                         {/* Buttons */}
                                         <div className="mt-4 w-full flex flex-col gap-2">
                                            
-                                            <Button variant="outline" className="w-full text-red-600 border-red-600 hover">
-                                                <Link to="/profile">
+                                            
+                                            <Link to="/profile">
+                                                <Button variant="outline" className="w-full text-red-600 border-red-600 hover">
                                                     See Profile
-                                                </Link>
+                                                </Button> 
+                                            </Link>
 
-                                            </Button>
+                                            
                                             <Button
                                                 onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
                                                 variant="default" className="w-full bg-red-500 text-white hover:bg-red-600">

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "../ui/button";
-import { Contact, Mail, Pen } from "lucide-react";
+import { Contact, Mail, Pen, User } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import AppliedJobsTable from "../AppliedJobsTable";
@@ -9,10 +9,13 @@ import UpdateProfileDialog from "../UpdateProfileDialog";
 import { useSelector } from "react-redux";
 
 const Profile = () => {
-    const skills = ["HTML", "CSS", "React", "Next.js"];
+    
+    
     const hasResume = true;
     const [open, setOpen] = useState(false);
     const { user } = useSelector(state => state.auth);
+    
+   
     return (
         <div className="max-w-6xl mx-auto my-8 bg-white dark:bg-gray-900 rounded-lg">
             <div className="p-8">
@@ -21,13 +24,12 @@ const Profile = () => {
                     <div className="flex items-center gap-6">
                         <Avatar className="h-24 w-24 shadow-md">
                             <AvatarImage src={user.profile.avatar} />
-                            <AvatarFallback>JD</AvatarFallback>
+                            <AvatarFallback><User/></AvatarFallback>
                         </Avatar>
                         <div>
                             <h1 className="text-3xl font-bold text-black dark:text-white">{user.fullName}</h1>
                             <p className="text-gray-600 dark:text-gray-400">
-                                Passionate Frontend Developer with expertise in building user-centric
-                                web applications. Always eager to learn and adapt to new technologies.
+                               {user?.profile?.bio}
                             </p>
                         </div>
                     </div>
@@ -56,9 +58,9 @@ const Profile = () => {
                 {/* Skills */}
                 <div className="mb-6">
                     <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Skills</h2>
-                    {skills.length ? (
+                    {user?.profile?.skills?.length ? (
                         <div className="flex flex-wrap gap-2">
-                            {skills.map((skill, index) => (
+                            {user?.profile?.skills.map((skill, index) => (
                                 <Badge
                                     key={index}
                                     className="px-3 py-1 bg-black dark:bg-gray-700 text-white rounded-full"
@@ -80,9 +82,9 @@ const Profile = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="block text-blue-600 dark:text-blue-400 hover:underline mt-1"
-                            href="https://portfolio-vite-react-type-script.vercel.app/"
+                            href={user.profile.resume}
                         >
-                            View Resume
+                            {user?.profile?.resumeOriginalName}
                         </a>
                     ) : (
                         <span className="text-gray-500 dark:text-gray-400">Not available</span>
